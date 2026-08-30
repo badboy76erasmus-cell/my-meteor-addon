@@ -2,7 +2,7 @@ package com.example.addon;
 
 import com.example.addon.commands.CommandExample;
 import com.example.addon.hud.HudExample;
-import com.example.addon.modules.AutoRelog;
+
 import com.example.addon.modules.AutoSetHome;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
@@ -24,7 +24,6 @@ public class AddonTemplate extends MeteorAddon {
         LOG.info("Initializing Meteor Addon Template");
 
 // Modules
-    Modules.get().add(new AutoRelog());
     Modules.get().add(new AutoSetHome());
         
         // Commands
