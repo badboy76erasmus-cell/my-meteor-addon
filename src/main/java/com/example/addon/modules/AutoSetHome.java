@@ -5,10 +5,14 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 import static com.example.addon.AddonTemplate.CATEGORY;
 
+/**
+ * Periodically runs a /sethome-style command so your home stays up to date
+ * without you having to remember to do it manually.
+ */
 public class AutoSetHome extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
@@ -36,13 +40,6 @@ public class AutoSetHome extends Module {
         .build()
     );
 
-    private final Setting<Boolean> onlyWhenGrounded = sgGeneral.add(new BoolSetting.Builder()
-        .name("only-when-grounded")
-        .description("Only set home while standing on solid ground.")
-        .defaultValue(true)
-        .build()
-    );
-
     private final Setting<Boolean> notify = sgGeneral.add(new BoolSetting.Builder()
         .name("notify")
         .description("Show a chat message in your client when home is set.")
@@ -63,14 +60,12 @@ public class AutoSetHome extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Post event) {
-        MinecraftClient mc = MinecraftClient.getInstance();
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
-
-        if (onlyWhenGrounded.get() && !mc.player.isOnGround()) return;
 
         if (timer-- <= 0) {
             String cmd = command.get().replace("%name%", homeName.get());
-            mc.player.networkHandler.sendChatCommand(cmd);
+            ChatUtils.sendPlayerMsg("/" + cmd);
 
             if (notify.get()) ChatUtils.info("Auto Set Home: ran \"/" + cmd + "\".");
 
